@@ -56,8 +56,23 @@ export class GameScene extends Phaser.Scene {
 
         this.setupSocketEvents();
 
+        // Cámara sigue al jugador
+        this.cameras.main.setZoom(1);
+
         // Tecla E para interactuar
-        this.input.keyboard.on('keydown-E', () => this.handleInteraction());
+        this.input.keyboard.on('keydown-E', () => {
+            if (this.isInputFocused()) return;
+            this.handleInteraction();
+        });
+
+        // Zoom de cámara (Rueda del ratón)
+        this.input.on('wheel', (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
+            const zoomSpeed = 0.001;
+            const oldZoom = this.cameras.main.zoom;
+            const newZoom = Phaser.Math.Clamp(oldZoom - deltaY * zoomSpeed, 0.5, 4);
+
+            this.cameras.main.setZoom(newZoom);
+        });
 
         // Prompt de interacción
         this.interactionPrompt = this.add.text(0, 0, '[E] Interactuar', {
@@ -78,9 +93,12 @@ export class GameScene extends Phaser.Scene {
     }
 
     update() {
-        if (this.localPlayer) {
+        if (this.localPlayer && !this.isInputFocused()) {
             this.localPlayer.update({ ...this.cursors, ...this.keys });
             this.updateInteractionPrompt();
+        } else if (this.localPlayer) {
+            // Si el input está enfocado, detener al jugador
+            this.localPlayer.body.setVelocity(0);
         }
 
         // Actualizar jugadores remotos para que sus nametags sigan al sprite
@@ -180,6 +198,11 @@ export class GameScene extends Phaser.Scene {
         } else {
             this.events.emit('ui:message', `Necesitas a alguien cerca para usar el ${nearObject.name}.`);
         }
+    }
+
+    isInputFocused() {
+        return document.activeElement.tagName === 'INPUT' ||
+            document.activeElement.tagName === 'TEXTAREA';
     }
 
     emitPosition() {

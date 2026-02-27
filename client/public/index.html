@@ -100,61 +100,89 @@
                     <button id="btn-leave-room" class="btn-danger">Salir</button>
                 </div>
             </header>
+            <div class="game-content">
 
-            <main id="game-container">
-                <!-- Aquí se inyectará el Canvas de Phaser -->
-                <div id="phaser-container"></div>
+                <main id="game-container">
+                    <!-- Aquí se inyectará el Canvas de Phaser -->
+                    <div id="phaser-container"></div>
 
-                <!-- Overlay de Invitación -->
-                <div id="scene-invite-overlay" class="game-overlay hidden">
-                    <div class="glass-card overlay-card">
-                        <h3>Invitación de Rol</h3>
-                        <p id="invite-text">Jugador te invita a una escena en Objeto.</p>
-                        <div class="button-group horizontal">
-                            <button id="btn-accept-invite" class="btn-primary">Aceptar</button>
-                            <button id="btn-reject-invite" class="btn-secondary">Ignorar</button>
+                    <!-- Botón de Ayuda Flotante -->
+                    <button id="btn-show-help" class="btn-floating">?</button>
+
+                    <!-- Modal de Ayuda -->
+                    <div id="help-overlay" class="game-overlay hidden">
+                        <div class="glass-card overlay-card help-card">
+                            <h3>Controles y Comandos</h3>
+                            <div class="help-content">
+                                <div class="help-section">
+                                    <h4>🎮 Movimiento</h4>
+                                    <p>WASD o Flechas: Moverse</p>
+                                    <p>RUEDA: Zoom +/-</p>
+                                    <p>E: Interactuar con objetos</p>
+                                </div>
+                                <div class="help-section">
+                                    <h4>💬 Chat</h4>
+                                    <p>ENTER: Escribir</p>
+                                    <p>/me [acción]: Narrativo</p>
+                                    <p>/roll [dados]: Dados</p>
+                                    <p>// [msj]: OOC</p>
+                                </div>
+                            </div>
+                            <button id="btn-close-help" class="btn-primary">Entendido</button>
                         </div>
                     </div>
-                </div>
 
-                <!-- Overlay de Selección de Acción -->
-                <div id="scene-selection-overlay" class="game-overlay hidden">
-                    <div class="glass-card overlay-card">
-                        <h3>Seleccionar Acción</h3>
-                        <p id="selection-partner-text">Con Jugador</p>
-                        <div id="actions-list" class="button-grid">
-                            <!-- Acciones filtradas aquí -->
-                        </div>
-                        <button id="btn-cancel-selection" class="btn-secondary">Cancelar</button>
-                    </div>
-                </div>
-
-                <!-- Ventana de Escena (La Animación) -->
-                <div id="scene-view-overlay" class="game-overlay hidden">
-                    <div class="scene-frame">
-                        <img id="scene-image" src="" alt="Escena de Rol">
-                        <div class="scene-controls">
-                            <button id="btn-back-selection" class="btn-secondary">Cambiar Acción</button>
-                            <button id="btn-close-scene" class="btn-danger">Finalizar</button>
+                    <!-- Overlay de Invitación -->
+                    <div id="scene-invite-overlay" class="game-overlay hidden">
+                        <div class="glass-card overlay-card">
+                            <h3>Invitación de Rol</h3>
+                            <p id="invite-text">Jugador te invita a una escena en Objeto.</p>
+                            <div class="button-group horizontal">
+                                <button id="btn-accept-invite" class="btn-primary">Aceptar</button>
+                                <button id="btn-reject-invite" class="btn-secondary">Ignorar</button>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Overlay de Carga/Estado -->
-                <div id="game-overlay" class="hidden">
-                    <div class="overlay-content">
-                        <p id="overlay-message">Cargando...</p>
+                    <!-- Overlay de Selección de Acción -->
+                    <div id="scene-selection-overlay" class="game-overlay hidden">
+                        <div class="glass-card overlay-card">
+                            <h3>Seleccionar Acción</h3>
+                            <p id="selection-partner-text">Con Jugador</p>
+                            <div id="actions-list" class="button-grid">
+                                <!-- Acciones filtradas aquí -->
+                            </div>
+                            <button id="btn-cancel-selection" class="btn-secondary">Cancelar</button>
+                        </div>
                     </div>
-                </div>
-            </main>
 
-            <aside id="chat-section">
-                <div id="chat-log"></div>
-                <div class="chat-input-area">
-                    <input type="text" id="chat-input" placeholder="Escribe un mensaje..." maxlength="500">
-                    <button id="btn-send-chat">Enviar</button>
-                </div>
-            </aside>
+                    <!-- Ventana de Escena (La Animación) -->
+                    <div id="scene-view-overlay" class="game-overlay hidden">
+                        <div class="scene-frame">
+                            <img id="scene-image" src="" alt="Escena de Rol">
+                            <div class="scene-controls">
+                                <button id="btn-back-selection" class="btn-secondary">Cambiar Acción</button>
+                                <button id="btn-close-scene" class="btn-danger">Finalizar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Overlay de Carga/Estado -->
+                    <div id="game-overlay" class="hidden">
+                        <div class="overlay-content">
+                            <p id="overlay-message">Cargando...</p>
+                        </div>
+                    </div>
+                </main>
+
+                <aside id="chat-section">
+                    <div id="chat-log"></div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chat-input" placeholder="Escribe un mensaje..." maxlength="500">
+                        <button id="btn-send-chat">Enviar</button>
+                    </div>
+                </aside>
+            </div>
         </section>
     </div>
 

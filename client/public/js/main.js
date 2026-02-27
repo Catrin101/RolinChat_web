@@ -26,7 +26,13 @@ const buttons = {
     create: document.getElementById('btn-create-room'),
     join: document.getElementById('btn-join-room'),
     leave: document.getElementById('btn-leave-room'),
-    sendChat: document.getElementById('btn-send-chat')
+    sendChat: document.getElementById('btn-send-chat'),
+    showHelp: document.getElementById('btn-show-help'),
+    closeHelp: document.getElementById('btn-close-help')
+};
+
+const overlays = {
+    help: document.getElementById('help-overlay')
 };
 
 const displays = {
@@ -43,7 +49,9 @@ const creatorUI = new AvatarCreatorUI({
     showView: (name) => showView(name)
 });
 
-// --- View Management ---
+// Help Menu Events
+buttons.showHelp.onclick = () => overlays.help.classList.remove('hidden');
+buttons.closeHelp.onclick = () => overlays.help.classList.add('hidden');
 function showView(viewName) {
     Object.keys(views).forEach(key => {
         views[key].classList.toggle('active', key === viewName);
