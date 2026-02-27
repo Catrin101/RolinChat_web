@@ -110,6 +110,19 @@ io.on('connection', (socket) => {
         });
     });
 
+    // Movimiento
+    socket.on('player:move', ({ x, y }) => {
+        const room = RoomManager.getRoomOfSocket(socket.id);
+        if (!room) return;
+
+        // Reenviar a los demás en la sala
+        socket.to(room.code).emit('player:move', {
+            id: socket.id,
+            x: x,
+            y: y
+        });
+    });
+
     // Desconexión
     socket.on('disconnect', () => {
         console.log(`Usuario desconectado: ${socket.id}`);

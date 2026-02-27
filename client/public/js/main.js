@@ -123,6 +123,11 @@ socket.on('room:created', ({ code, url }) => {
     displays.playerName.innerText = avatarManager.activeAvatar.nombre;
     showView('game');
     appendSystemMessage(`Sala creada. Código: ${code}`);
+
+    // Iniciar Phaser
+    import('/src/managers/GameManager.js').then(m => {
+        m.gameManager.init(socket, { code, players: [] }, avatarManager.activeAvatar);
+    });
 });
 
 socket.on('room:joined', ({ code, name, players }) => {
@@ -132,6 +137,11 @@ socket.on('room:joined', ({ code, name, players }) => {
     showView('game');
     appendSystemMessage(`Te has unido a la sala ${name}.`);
     appendSystemMessage(`Jugadores presentes: ${players.map(p => p.name).join(', ')}`);
+
+    // Iniciar Phaser
+    import('/src/managers/GameManager.js').then(m => {
+        m.gameManager.init(socket, { code, name, players }, avatarManager.activeAvatar);
+    });
 });
 
 socket.on('room:error', ({ message }) => {
