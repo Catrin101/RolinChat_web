@@ -104,10 +104,24 @@ buttons.leave.addEventListener('click', () => {
 // Chat
 function sendMessage() {
     const text = inputs.chat.value.trim();
-    if (text) {
-        socket.emit('chat:message', { text });
-        inputs.chat.value = '';
+    if (!text) return;
+
+    // Parser de comandos
+    if (text.startsWith('/me ')) {
+        const action = text.substring(4);
+        socket.emit('chat:message', { type: 'action', text: action });
+    } else if (text.startsWith('/roll') || text.startsWith('/dado')) {
+        const formula = text.split(' ')[1] || '1d20';
+        socket.emit('chat:message', { type: 'roll', text: formula });
+    } else if (text.startsWith('//')) {
+        const ooc = text.substring(2);
+        socket.emit('chat:message', { type: 'ooc', text: ooc });
+    } else {
+        // Chat normal (IC)
+        socket.emit('chat:message', { type: 'ic', text: text });
     }
+
+    inputs.chat.value = '';
 }
 
 buttons.sendChat.addEventListener('click', sendMessage);
@@ -139,12 +153,21 @@ socket.on('room:created', ({ code, url }) => {
     });
 });
 
-socket.on('room:joined', ({ code, name, players }) => {
+socket.on('room:joined', ({ code, name, players, messages }) => {
     displays.roomName.innerText = `Sala: ${name}`;
     displays.roomCode.innerText = code;
     displays.playerName.innerText = avatarManager.activeAvatar.nombre;
     showView('game');
     appendSystemMessage(`Te has unido a la sala ${name}.`);
+
+    // Cargar historial
+    if (messages && messages.length > 0) {
+        messages.forEach(msg => {
+            renderChatMessage(msg.sender, msg.text, msg.type);
+        });
+        appendSystemMessage('--- Historial Cargado ---');
+    }
+
     appendSystemMessage(`Jugadores presentes: ${players.map(p => p.name).join(', ')}`);
 
     // Iniciar Phaser
@@ -167,13 +190,35 @@ socket.on('room:error', ({ message }) => {
     alert(message);
 });
 
-socket.on('chat:message', ({ sender, text }) => {
+socket.on('chat:message', ({ sender, text, type }) => {
+    renderChatMessage(sender, text, type);
+});
+
+function renderChatMessage(sender, text, type) {
     const msgEl = document.createElement('div');
-    msgEl.className = 'chat-msg';
-    msgEl.innerHTML = `<span class="sender">${sender}:</span><span class="text">${escapeHtml(text)}</span>`;
+    msgEl.className = `chat-msg ${type || 'ic'}`;
+
+    let content = '';
+    switch (type) {
+        case 'action':
+            content = `<span class="text italic">* ${sender} ${escapeHtml(text)} *</span>`;
+            break;
+        case 'roll':
+            content = `<span class="system">[DADO] ${sender} lanzó: </span><span class="text bold">${escapeHtml(text)}</span>`;
+            break;
+        case 'ooc':
+            content = `<span class="sender dimmed">(OOC) ${sender}:</span><span class="text dimmed">${escapeHtml(text)}</span>`;
+            break;
+        case 'ic':
+        default:
+            content = `<span class="sender">${sender}:</span><span class="text">${escapeHtml(text)}</span>`;
+            break;
+    }
+
+    msgEl.innerHTML = content;
     displays.chatLog.appendChild(msgEl);
     displays.chatLog.scrollTop = displays.chatLog.scrollHeight;
-});
+}
 
 socket.on('player:joined', ({ name }) => {
     appendSystemMessage(`${name} se ha unido.`);

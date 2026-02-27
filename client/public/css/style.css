@@ -468,6 +468,32 @@ textarea {
     transform: translateX(-50%);
 }
 
+.chat-msg .italic {
+    font-style: italic;
+    color: #a0a0a0;
+}
+
+.chat-msg .bold {
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.chat-msg .dimmed {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.chat-msg.action {
+    margin: 0.4rem 0;
+}
+
+.chat-msg.roll {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.3rem 0.5rem;
+    border-radius: 4px;
+    border-left: 2px solid var(--primary);
+}
+
 .hidden {
     display: none !important;
 }

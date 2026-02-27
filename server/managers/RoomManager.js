@@ -20,8 +20,9 @@ class RoomManager {
         this.rooms.set(code, {
             code,
             name: roomName || 'Sala de Rol',
-            mapKey: mapKey || 'lobby',
+            mapKey: mapKey,
             players: new Map(),
+            messages: [], // Historial de mensajes (Phase 5)
             scenes: new Map(),
             createdAt: Date.now()
         });

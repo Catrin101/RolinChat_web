@@ -85,7 +85,8 @@ io.on('connection', (socket) => {
             code,
             name: room.name,
             mapKey: room.mapKey,
-            players: [...room.players.values()]
+            players: [...room.players.values()],
+            messages: room.messages // Enviar historial
         });
 
         // Notificar a los demás
@@ -96,20 +97,62 @@ io.on('connection', (socket) => {
     });
 
     // Chat
-    socket.on('chat:message', ({ text }) => {
+    socket.on('chat:message', ({ text, type }) => {
         if (!rateLimitChat(socket.id)) return;
 
         const room = RoomManager.getRoomOfSocket(socket.id);
         if (!room) return;
 
         const player = room.players.get(socket.id);
-        const safeText = String(text).substring(0, 500);
+        let safeText = String(text).substring(0, 500);
+        let finalType = type || 'ic';
 
-        io.to(room.code).emit('chat:message', {
+        // Lógica de Dados en Servidor
+        if (type === 'roll') {
+            const rollResult = rollDice(safeText);
+            safeText = rollResult;
+        }
+
+        const messageData = {
             sender: player.name,
-            text: safeText
-        });
+            text: safeText,
+            type: finalType
+        };
+
+        room.messages.push(messageData);
+        if (room.messages.length > 50) room.messages.shift(); // Límite de 50 mensajes
+
+        io.to(room.code).emit('chat:message', messageData);
     });
+
+    /**
+     * Helper para tirar dados (ej: 1d20, 2d6+4)
+     */
+    function rollDice(formula) {
+        try {
+            const match = formula.toLowerCase().match(/^(\d+)d(\d+)([\+\-]\d+)?$/);
+            if (!match) return `Fórmula inválida ${formula}. Usa 1d20 o 2d6+5.`;
+
+            const num = parseInt(match[1]);
+            const sides = parseInt(match[2]);
+            const mod = match[3] ? parseInt(match[3]) : 0;
+
+            if (num > 20 || sides > 100) return "¡Demasiados dados o caras!";
+
+            let results = [];
+            let total = 0;
+            for (let i = 0; i < num; i++) {
+                const r = Math.floor(Math.random() * sides) + 1;
+                results.push(r);
+                total += r;
+            }
+            total += mod;
+
+            return `${num}d${sides}${mod ? (mod > 0 ? '+' + mod : mod) : ''} => (${results.join(' + ')})${mod ? (mod > 0 ? ' + ' + mod : ' - ' + Math.abs(mod)) : ''} = ${total}`;
+        } catch (e) {
+            return "Error en la tirada.";
+        }
+    }
 
     // Movimiento
     socket.on('player:move', ({ x, y }) => {
