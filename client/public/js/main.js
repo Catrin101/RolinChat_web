@@ -127,6 +127,15 @@ socket.on('room:created', ({ code, url }) => {
     // Iniciar Phaser
     import('/src/managers/GameManager.js').then(m => {
         m.gameManager.init(socket, { code, players: [] }, avatarManager.activeAvatar);
+
+        m.gameManager.game.events.on('ui:message', (text) => {
+            appendSystemMessage(text);
+        });
+    });
+
+    // Iniciar UI de Escenas
+    import('/src/ui/JointSceneUI.js').then(m => {
+        new m.JointSceneUI(socket);
     });
 });
 
@@ -141,6 +150,16 @@ socket.on('room:joined', ({ code, name, players }) => {
     // Iniciar Phaser
     import('/src/managers/GameManager.js').then(m => {
         m.gameManager.init(socket, { code, name, players }, avatarManager.activeAvatar);
+
+        // Manejar mensajes de Phaser a la UI de Chat
+        m.gameManager.game.events.on('ui:message', (text) => {
+            appendSystemMessage(text);
+        });
+    });
+
+    // Iniciar UI de Escenas
+    import('/src/ui/JointSceneUI.js').then(m => {
+        new m.JointSceneUI(socket);
     });
 });
 

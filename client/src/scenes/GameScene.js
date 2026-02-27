@@ -10,6 +10,8 @@ export class GameScene extends Phaser.Scene {
         super({ key: 'GameScene' });
         this.localPlayer = null;
         this.remotePlayers = new Map();
+        this.interactiveObjects = [];
+        this.interactionPrompt = null;
         this.socket = null;
     }
 
@@ -44,9 +46,27 @@ export class GameScene extends Phaser.Scene {
 
         // Configurar Controles
         this.cursors = this.input.keyboard.createCursorKeys();
-        this.keys = this.input.keyboard.addKeys('W,A,S,D');
+        this.keys = this.input.keyboard.addKeys('W,A,S,D,E');
+
+        // Objetos Interactivos Provisionales (para MVP)
+        // Sofá
+        this.addInteractionZone(200, 200, 100, 60, 'Sofa de Terciopelo');
+        // Mesa
+        this.addInteractionZone(600, 400, 80, 80, 'Mesa Redonda');
 
         this.setupSocketEvents();
+
+        // Tecla E para interactuar
+        this.input.keyboard.on('keydown-E', () => this.handleInteraction());
+
+        // Prompt de interacción
+        this.interactionPrompt = this.add.text(0, 0, '[E] Interactuar', {
+            fontSize: '14px',
+            backgroundColor: '#d4af37',
+            color: '#000',
+            padding: { x: 5, y: 2 },
+            borderRadius: 4
+        }).setOrigin(0.5).setVisible(false).setDepth(100);
 
         // Timer para enviar posición (20 veces por segundo)
         this.time.addEvent({
@@ -60,10 +80,26 @@ export class GameScene extends Phaser.Scene {
     update() {
         if (this.localPlayer) {
             this.localPlayer.update({ ...this.cursors, ...this.keys });
+            this.updateInteractionPrompt();
         }
 
         // Actualizar jugadores remotos para que sus nametags sigan al sprite
         this.remotePlayers.forEach(player => player.update());
+    }
+
+    updateInteractionPrompt() {
+        let nearObject = null;
+        this.interactiveObjects.forEach(obj => {
+            const dist = Phaser.Math.Distance.Between(this.localPlayer.x, this.localPlayer.y, obj.x, obj.y);
+            if (dist < 80) nearObject = obj;
+        });
+
+        if (nearObject) {
+            this.interactionPrompt.setPosition(nearObject.x, nearObject.y - 40);
+            this.interactionPrompt.setVisible(true);
+        } else {
+            this.interactionPrompt.setVisible(false);
+        }
     }
 
     setupSocketEvents() {
@@ -101,6 +137,49 @@ export class GameScene extends Phaser.Scene {
 
         const remotePlayer = new PlayerEntity(this, 400, 300, playerData, false);
         this.remotePlayers.set(playerData.id, remotePlayer);
+    }
+
+    addInteractionZone(x, y, w, h, name) {
+        const zone = this.add.zone(x, y, w, h);
+        this.physics.add.existing(zone, true);
+        zone.name = name;
+        this.interactiveObjects.push(zone);
+
+        // Visual para debug/MVP
+        this.add.rectangle(x, y, w, h, 0x333333, 0.5).setStrokeStyle(1, 0xaaaaaa);
+        this.add.text(x, y, name, { fontSize: '10px', color: '#888' }).setOrigin(0.5);
+    }
+
+    handleInteraction() {
+        if (!this.localPlayer) return;
+
+        // 1. Buscar objeto cercano
+        let nearObject = null;
+        this.interactiveObjects.forEach(obj => {
+            const dist = Phaser.Math.Distance.Between(this.localPlayer.x, this.localPlayer.y, obj.x, obj.y);
+            if (dist < 80) nearObject = obj;
+        });
+
+        if (!nearObject) return;
+
+        // 2. Buscar jugador cercano
+        let nearPlayer = null;
+        this.remotePlayers.forEach((player, id) => {
+            const dist = Phaser.Math.Distance.Between(this.localPlayer.x, this.localPlayer.y, player.x, player.y);
+            if (dist < 100) nearPlayer = { id, name: player.playerData.name };
+        });
+
+        if (nearPlayer) {
+            console.log(`Invitando a ${nearPlayer.name} a escena en ${nearObject.name}`);
+            this.socket.emit('scene:request', {
+                objectId: nearObject.name,
+                partnerId: nearPlayer.id
+            });
+            // Mostrar estado de espera
+            this.events.emit('ui:message', `Has invitado a ${nearPlayer.name} a ${nearObject.name}...`);
+        } else {
+            this.events.emit('ui:message', `Necesitas a alguien cerca para usar el ${nearObject.name}.`);
+        }
     }
 
     emitPosition() {

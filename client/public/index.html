@@ -105,6 +105,41 @@
                 <!-- Aquí se inyectará el Canvas de Phaser -->
                 <div id="phaser-container"></div>
 
+                <!-- Overlay de Invitación -->
+                <div id="scene-invite-overlay" class="game-overlay hidden">
+                    <div class="glass-card overlay-card">
+                        <h3>Invitación de Rol</h3>
+                        <p id="invite-text">Jugador te invita a una escena en Objeto.</p>
+                        <div class="button-group horizontal">
+                            <button id="btn-accept-invite" class="btn-primary">Aceptar</button>
+                            <button id="btn-reject-invite" class="btn-secondary">Ignorar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Overlay de Selección de Acción -->
+                <div id="scene-selection-overlay" class="game-overlay hidden">
+                    <div class="glass-card overlay-card">
+                        <h3>Seleccionar Acción</h3>
+                        <p id="selection-partner-text">Con Jugador</p>
+                        <div id="actions-list" class="button-grid">
+                            <!-- Acciones filtradas aquí -->
+                        </div>
+                        <button id="btn-cancel-selection" class="btn-secondary">Cancelar</button>
+                    </div>
+                </div>
+
+                <!-- Ventana de Escena (La Animación) -->
+                <div id="scene-view-overlay" class="game-overlay hidden">
+                    <div class="scene-frame">
+                        <img id="scene-image" src="" alt="Escena de Rol">
+                        <div class="scene-controls">
+                            <button id="btn-back-selection" class="btn-secondary">Cambiar Acción</button>
+                            <button id="btn-close-scene" class="btn-danger">Finalizar</button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Overlay de Carga/Estado -->
                 <div id="game-overlay" class="hidden">
                     <div class="overlay-content">

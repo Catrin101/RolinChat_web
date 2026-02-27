@@ -8,6 +8,7 @@ const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
 const RoomManager = require('./managers/RoomManager');
+const SceneManager = require('./managers/SceneManager');
 
 const app = express();
 app.use(cors());
@@ -121,6 +122,63 @@ io.on('connection', (socket) => {
             x: x,
             y: y
         });
+    });
+
+    // --- Escenas Conjuntas ---
+
+    // Pedir Escena (Host)
+    socket.on('scene:request', ({ objectId }) => {
+        const room = RoomManager.getRoomOfSocket(socket.id);
+        if (!room) return;
+
+        const player = room.players.get(socket.id);
+        console.log(`Petición de escena en ${objectId} por ${player.name}`);
+
+        socket.to(room.code).emit('scene:invite', {
+            hostId: socket.id,
+            hostName: player.name,
+            objectId
+        });
+    });
+
+    // Aceptar Escena (Invitado)
+    socket.on('scene:accept', ({ hostId, objectId }) => {
+        const room = RoomManager.getRoomOfSocket(socket.id);
+        if (!room) return;
+
+        const guest = room.players.get(socket.id);
+        const host = room.players.get(hostId);
+
+        if (!host) return;
+
+        // Filtrar acciones compatibles
+        const actions = SceneManager.getCompatibleActions(host, guest);
+
+        // Notificar a ambos que la conexión de escena es posible
+        io.to(hostId).emit('scene:start_selection', {
+            partnerId: socket.id,
+            partnerName: guest.name,
+            actions
+        });
+        socket.emit('scene:start_selection', {
+            partnerId: hostId,
+            partnerName: host.name,
+            actions
+        });
+    });
+
+    // Ejecutar Acción Seleccionada
+    socket.on('scene:select_action', ({ partnerId, actionId }) => {
+        // En el MVP, el primero que elige manda la imagen a ambos
+        const room = RoomManager.getRoomOfSocket(socket.id);
+        if (!room) return;
+
+        io.to(socket.id).to(partnerId).emit('scene:play', { actionId });
+    });
+
+    // Finalizar Escena
+    socket.on('scene:end', ({ partnerId }) => {
+        io.to(socket.id).to(partnerId).emit('scene:close');
     });
 
     // Desconexión
