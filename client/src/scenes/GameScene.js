@@ -61,6 +61,9 @@ export class GameScene extends Phaser.Scene {
         if (this.localPlayer) {
             this.localPlayer.update({ ...this.cursors, ...this.keys });
         }
+
+        // Actualizar jugadores remotos para que sus nametags sigan al sprite
+        this.remotePlayers.forEach(player => player.update());
     }
 
     setupSocketEvents() {
