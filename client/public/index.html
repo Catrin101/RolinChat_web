@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RolinChat - RPG Social MVP</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Pantalla de Inicio -->
+        <section id="main-menu" class="view active">
+            <div class="glass-card">
+                <h1>RolinChat</h1>
+                <p>Plataforma Social de Roleplay Narrativo</p>
+                
+                <div class="menu-actions">
+                    <div class="input-group">
+                        <input type="text" id="player-name" placeholder="Tu nombre de narrador..." maxlength="30">
+                    </div>
+                    
+                    <div class="button-group">
+                        <button id="btn-create-room" class="btn-primary">Crear Nueva Sala</button>
+                    </div>
+
+                    <div class="divider"><span>o</span></div>
+
+                    <div class="input-group">
+                        <input type="text" id="room-code" placeholder="Código de Sala (8 chars)" maxlength="8">
+                        <button id="btn-join-room" class="btn-secondary">Unirse</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pantalla de Juego -->
+        <section id="game-view" class="view">
+            <header class="game-header">
+                <div class="room-info">
+                    <span id="display-room-name">Sala: ...</span>
+                    <span id="display-room-code" class="code-badge">#CODE</span>
+                </div>
+                <div class="user-info">
+                    <span id="display-player-name">Jugador</span>
+                    <button id="btn-leave-room" class="btn-danger">Salir</button>
+                </div>
+            </header>
+
+            <main id="game-container">
+                <!-- Aquí se inyectará el Canvas de Phaser -->
+                <div id="phaser-container"></div>
+                
+                <!-- Overlay de Carga/Estado -->
+                <div id="game-overlay" class="hidden">
+                    <div class="overlay-content">
+                        <p id="overlay-message">Cargando...</p>
+                    </div>
+                </div>
+            </main>
+
+            <aside id="chat-section">
+                <div id="chat-log"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="chat-input" placeholder="Escribe un mensaje..." maxlength="500">
+                    <button id="btn-send-chat">Enviar</button>
+                </div>
+            </aside>
+        </section>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
