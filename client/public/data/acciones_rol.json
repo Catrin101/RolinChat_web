@@ -1,0 +1,116 @@
+{
+    "acciones": [
+        {
+            "id": "charlar_sofa",
+            "nombre": "Charlar en el Sofá",
+            "duracion": 5,
+            "combinaciones_sexo": [
+                [
+                    "masculino",
+                    "femenino"
+                ],
+                [
+                    "femenino",
+                    "femenino"
+                ],
+                [
+                    "masculino",
+                    "masculino"
+                ],
+                [
+                    "no_binario",
+                    "masculino"
+                ],
+                [
+                    "no_binario",
+                    "femenino"
+                ],
+                [
+                    "no_binario",
+                    "no_binario"
+                ]
+            ],
+            "combinaciones_raza": [
+                [
+                    "humano",
+                    "humano"
+                ],
+                [
+                    "humano",
+                    "elfo"
+                ],
+                [
+                    "elfo",
+                    "elfo"
+                ],
+                [
+                    "enano",
+                    "enano"
+                ],
+                [
+                    "humano",
+                    "enano"
+                ],
+                [
+                    "orco",
+                    "orco"
+                ],
+                [
+                    "humano",
+                    "orco"
+                ]
+            ],
+            "imagen_url": "assets/scenes/charlar_sofa.png"
+        },
+        {
+            "id": "duelo_practica",
+            "nombre": "Duelo de Práctica",
+            "duracion": 10,
+            "combinaciones_sexo": [
+                [
+                    "masculino",
+                    "femenino"
+                ],
+                [
+                    "femenino",
+                    "femenino"
+                ],
+                [
+                    "masculino",
+                    "masculino"
+                ],
+                [
+                    "no_binario",
+                    "masculino"
+                ],
+                [
+                    "no_binario",
+                    "femenino"
+                ],
+                [
+                    "no_binario",
+                    "no_binario"
+                ]
+            ],
+            "combinaciones_raza": [
+                [
+                    "humano",
+                    "humano"
+                ],
+                [
+                    "orco",
+                    "orco"
+                ],
+                [
+                    "humano",
+                    "orco"
+                ],
+                [
+                    "enano",
+                    "enano"
+                ]
+            ],
+            "imagen_url": "assets/scenes/duelo_practica.png"
+        }
+    ]
+}

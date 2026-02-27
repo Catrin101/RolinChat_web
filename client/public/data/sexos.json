@@ -1,0 +1,19 @@
+{
+    "sexos": [
+        {
+            "id": "masculino",
+            "nombre": "Masculino",
+            "icono": "♂"
+        },
+        {
+            "id": "femenino",
+            "nombre": "Femenino",
+            "icono": "♀"
+        },
+        {
+            "id": "no_binario",
+            "nombre": "No Binario",
+            "icono": "⚧"
+        }
+    ]
+}

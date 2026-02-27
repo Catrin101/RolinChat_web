@@ -12,6 +12,7 @@ const RoomManager = require('./managers/RoomManager');
 const app = express();
 app.use(cors());
 app.use(express.static('client/public'));
+app.use('/src', express.static('client/src'));
 
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -39,7 +40,7 @@ io.on('connection', (socket) => {
     console.log(`Usuario conectado: ${socket.id}`);
 
     // Crear Sala
-    socket.on('room:create', ({ roomName, mapKey, playerName }) => {
+    socket.on('room:create', ({ roomName, mapKey, playerName, avatar }) => {
         const code = RoomManager.createRoom(socket.id, roomName, mapKey);
         socket.join(code);
 
@@ -47,7 +48,7 @@ io.on('connection', (socket) => {
         room.players.set(socket.id, {
             id: socket.id,
             name: playerName || 'Anónimo',
-            avatar: null
+            avatar: avatar || null
         });
 
         console.log(`Sala creada: ${code} por ${playerName}`);
@@ -58,7 +59,7 @@ io.on('connection', (socket) => {
     });
 
     // Unirse a Sala
-    socket.on('room:join', ({ code, playerName }) => {
+    socket.on('room:join', ({ code, playerName, avatar }) => {
         const room = RoomManager.getRoom(code);
         if (!room) {
             socket.emit('room:error', { message: 'Sala no encontrada. Verifica el código.' });
@@ -73,7 +74,7 @@ io.on('connection', (socket) => {
         room.players.set(socket.id, {
             id: socket.id,
             name: finalName,
-            avatar: null
+            avatar: avatar || null
         });
 
         console.log(`Usuario ${finalName} se unió a la sala ${code}`);

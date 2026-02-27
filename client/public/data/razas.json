@@ -1,0 +1,24 @@
+{
+    "razas": [
+        {
+            "id": "humano",
+            "nombre": "Humano",
+            "descripcion": "Versátiles y ambiciosos, adaptables a cualquier entorno."
+        },
+        {
+            "id": "elfo",
+            "nombre": "Elfo",
+            "descripcion": "Seres longevos y elegantes con una conexión profunda con lo arcano."
+        },
+        {
+            "id": "enano",
+            "nombre": "Enano",
+            "descripcion": "Fuertes y resistentes, maestros de la forja y la minería."
+        },
+        {
+            "id": "orco",
+            "nombre": "Orco",
+            "descripcion": "Poderosos y fieros, con una cultura basada en el honor y la fuerza."
+        }
+    ]
+}

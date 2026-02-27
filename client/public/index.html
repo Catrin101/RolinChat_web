@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +8,10 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Outfit:wght@400;700&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
     <div id="app">
         <!-- Pantalla de Inicio -->
@@ -16,14 +19,18 @@
             <div class="glass-card">
                 <h1>RolinChat</h1>
                 <p>Plataforma Social de Roleplay Narrativo</p>
-                
+
                 <div class="menu-actions">
                     <div class="input-group">
                         <input type="text" id="player-name" placeholder="Tu nombre de narrador..." maxlength="30">
                     </div>
-                    
+
                     <div class="button-group">
-                        <button id="btn-create-room" class="btn-primary">Crear Nueva Sala</button>
+                        <button id="btn-show-creator" class="btn-primary">Configurar Personajes</button>
+                    </div>
+
+                    <div class="button-group">
+                        <button id="btn-create-room" class="btn-secondary">Crear Nueva Sala</button>
                     </div>
 
                     <div class="divider"><span>o</span></div>
@@ -32,6 +39,51 @@
                         <input type="text" id="room-code" placeholder="Código de Sala (8 chars)" maxlength="8">
                         <button id="btn-join-room" class="btn-secondary">Unirse</button>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Creador de Avatares -->
+        <section id="avatar-view" class="view">
+            <div class="glass-card creator-card">
+                <h2>Mis Personajes</h2>
+
+                <div class="profiles-list-container">
+                    <ul id="profiles-list"></ul>
+                    <button id="btn-new-profile" class="btn-small">+ Nuevo Personaje</button>
+                </div>
+
+                <div id="profile-editor" class="hidden">
+                    <hr>
+                    <div class="input-group">
+                        <input type="text" id="av-nombre" placeholder="Nombre del personaje" maxlength="30">
+                    </div>
+                    <div class="input-group">
+                        <textarea id="av-desc" placeholder="Descripción/Historia..." maxlength="500"></textarea>
+                    </div>
+                    <div class="select-group">
+                        <select id="av-raza">
+                            <option value="">Seleccionar Raza</option>
+                        </select>
+                        <select id="av-sexo">
+                            <option value="">Seleccionar Sexo</option>
+                        </select>
+                    </div>
+                    <div class="image-selector">
+                        <p>Imagen del Avatar (URL):</p>
+                        <input type="text" id="av-imagen" placeholder="URL de la imagen o asset path">
+                        <div class="preview-box">
+                            <img id="av-preview" src="assets/avatars/placeholder.png" alt="Preview">
+                        </div>
+                    </div>
+                    <div class="button-group horizontal">
+                        <button id="btn-save-profile" class="btn-primary">Guardar</button>
+                        <button id="btn-cancel-profile" class="btn-secondary">Cancelar</button>
+                    </div>
+                </div>
+
+                <div class="footer-actions">
+                    <button id="btn-back-menu" class="btn-secondary">Volver al Menú</button>
                 </div>
             </div>
         </section>
@@ -52,7 +104,7 @@
             <main id="game-container">
                 <!-- Aquí se inyectará el Canvas de Phaser -->
                 <div id="phaser-container"></div>
-                
+
                 <!-- Overlay de Carga/Estado -->
                 <div id="game-overlay" class="hidden">
                     <div class="overlay-content">
@@ -76,4 +128,5 @@
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
     <script type="module" src="js/main.js"></script>
 </body>
+
 </html>

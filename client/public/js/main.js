@@ -3,11 +3,15 @@
  * Lógica principal del cliente y gestión de UI.
  */
 
+import { avatarManager } from '/src/managers/AvatarManager.js';
+import { AvatarCreatorUI } from '/src/ui/AvatarCreatorUI.js';
+
 const socket = io();
 
 // UI Elements
 const views = {
     menu: document.getElementById('main-menu'),
+    avatar: document.getElementById('avatar-view'),
     game: document.getElementById('game-view')
 };
 
@@ -18,6 +22,7 @@ const inputs = {
 };
 
 const buttons = {
+    showCreator: document.getElementById('btn-show-creator'),
     create: document.getElementById('btn-create-room'),
     join: document.getElementById('btn-join-room'),
     leave: document.getElementById('btn-leave-room'),
@@ -31,6 +36,13 @@ const displays = {
     chatLog: document.getElementById('chat-log')
 };
 
+// --- Initialization ---
+
+// Inicializar UI del Creador
+const creatorUI = new AvatarCreatorUI({
+    showView: (name) => showView(name)
+});
+
 // --- View Management ---
 function showView(viewName) {
     Object.keys(views).forEach(key => {
@@ -40,13 +52,25 @@ function showView(viewName) {
 
 // --- Event Handlers ---
 
+// Mostrar Creador
+buttons.showCreator.addEventListener('click', () => {
+    showView('avatar');
+});
+
 // Crear Sala
 buttons.create.addEventListener('click', () => {
     const name = inputs.playerName.value.trim() || 'Anónimo';
+
+    if (!avatarManager.activeAvatar) {
+        alert('Por favor, selecciona o crea un personaje primero en "Configurar Personajes".');
+        return;
+    }
+
     socket.emit('room:create', {
         roomName: 'Avatar Lobby',
         mapKey: 'lobby',
-        playerName: name
+        playerName: name,
+        avatar: avatarManager.activeAvatar.toJSON()
     });
 });
 
@@ -60,7 +84,16 @@ buttons.join.addEventListener('click', () => {
         return;
     }
 
-    socket.emit('room:join', { code, playerName: name });
+    if (!avatarManager.activeAvatar) {
+        alert('Por favor, selecciona o crea un personaje primero en "Configurar Personajes".');
+        return;
+    }
+
+    socket.emit('room:join', {
+        code,
+        playerName: name,
+        avatar: avatarManager.activeAvatar.toJSON()
+    });
 });
 
 // Salir
@@ -87,7 +120,7 @@ inputs.chat.addEventListener('keypress', (e) => {
 socket.on('room:created', ({ code, url }) => {
     displays.roomName.innerText = 'Sala: Avatar Lobby';
     displays.roomCode.innerText = code;
-    displays.playerName.innerText = inputs.playerName.value.trim() || 'Anónimo';
+    displays.playerName.innerText = avatarManager.activeAvatar.nombre;
     showView('game');
     appendSystemMessage(`Sala creada. Código: ${code}`);
 });
@@ -95,7 +128,7 @@ socket.on('room:created', ({ code, url }) => {
 socket.on('room:joined', ({ code, name, players }) => {
     displays.roomName.innerText = `Sala: ${name}`;
     displays.roomCode.innerText = code;
-    displays.playerName.innerText = inputs.playerName.value.trim() || 'Anónimo';
+    displays.playerName.innerText = avatarManager.activeAvatar.nombre;
     showView('game');
     appendSystemMessage(`Te has unido a la sala ${name}.`);
     appendSystemMessage(`Jugadores presentes: ${players.map(p => p.name).join(', ')}`);
@@ -135,11 +168,4 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
-}
-
-// Check for room code in URL (optional helper)
-const urlParams = new URLSearchParams(window.location.search);
-const urlCode = window.location.pathname.split('/').pop();
-if (urlCode && urlCode.length === 8 && /^[A-Z0-9]+$/.test(urlCode)) {
-    inputs.roomCode.value = urlCode;
 }

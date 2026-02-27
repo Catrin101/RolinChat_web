@@ -1,5 +1,6 @@
 :root {
-    --primary: #d4af37; /* Dorado */
+    --primary: #d4af37;
+    /* Dorado */
     --primary-hover: #f1c40f;
     --secondary: #34495e;
     --danger: #c0392b;
@@ -24,7 +25,8 @@ body {
     overflow: hidden;
 }
 
-h1, .btn-primary {
+h1,
+.btn-primary {
     font-family: 'Outfit', sans-serif;
 }
 
@@ -180,6 +182,136 @@ button {
     align-items: center;
 }
 
+/* --- Creador de Personajes --- */
+.creator-card {
+    max-width: 600px;
+    padding: 2rem;
+}
+
+.creator-card h2 {
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+}
+
+.profiles-list-container {
+    margin-bottom: 2rem;
+    text-align: left;
+}
+
+#profiles-list {
+    list-style: none;
+    margin-bottom: 1rem;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.profile-item {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 0.8rem;
+    margin-bottom: 0.5rem;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+}
+
+.profile-item:hover {
+    border-color: var(--primary);
+}
+
+.profile-item.active {
+    background: rgba(212, 175, 55, 0.1);
+    border-color: var(--primary);
+}
+
+.profile-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.profile-thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.btn-small {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+}
+
+.select-group {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+select {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--glass-border);
+    padding: 0.8rem;
+    border-radius: 8px;
+    color: white;
+    flex: 1;
+    outline: none;
+}
+
+textarea {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--glass-border);
+    padding: 0.8rem;
+    border-radius: 8px;
+    color: white;
+    width: 100%;
+    height: 80px;
+    resize: none;
+    outline: none;
+}
+
+.image-selector {
+    text-align: left;
+    margin-bottom: 1.5rem;
+}
+
+.image-selector p {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.preview-box {
+    margin-top: 1rem;
+    width: 100px;
+    height: 100px;
+    background: #000;
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#av-preview {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.horizontal {
+    display: flex;
+    gap: 1rem;
+}
+
+.footer-actions {
+    margin-top: 2rem;
+    border-top: 1px solid var(--glass-border);
+    padding-top: 1.5rem;
+}
+
+
 .room-info {
     display: flex;
     gap: 1rem;
@@ -265,15 +397,20 @@ button {
 ::-webkit-scrollbar {
     width: 6px;
 }
+
 ::-webkit-scrollbar-track {
     background: #111;
 }
+
 ::-webkit-scrollbar-thumb {
     background: #333;
     border-radius: 10px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
     background: #444;
 }
 
-.hidden { display: none !important; }
+.hidden {
+    display: none !important;
+}
