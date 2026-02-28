@@ -20,12 +20,17 @@ class GameManager {
     init(socket, roomData, playerData) {
         this.socket = socket;
 
+        const container = document.getElementById('phaser-container');
+        const width = container.clientWidth || (window.innerWidth - 350);
+        const height = container.clientHeight || (window.innerHeight - 52);
+
         const config = {
             type: Phaser.AUTO,
             parent: 'phaser-container',
-            width: 800,
-            height: 600,
+            width,
+            height,
             pixelArt: true,
+            backgroundColor: '#050505',
             physics: {
                 default: 'arcade',
                 arcade: {
@@ -33,7 +38,12 @@ class GameManager {
                     debug: false
                 }
             },
-            scene: GameScene
+            scene: GameScene,
+            // ✅ Canvas responsive: se redimensiona con el contenedor
+            scale: {
+                mode: Phaser.Scale.RESIZE,
+                autoCenter: Phaser.Scale.CENTER_BOTH
+            }
         };
 
         this.game = new Phaser.Game(config);
@@ -41,7 +51,7 @@ class GameManager {
         // Pasar datos a la escena cuando esté lista
         this.game.scene.start('GameScene', {
             socket: this.socket,
-            roomData: this.roomData || roomData,
+            roomData: roomData,
             playerData: playerData
         });
     }
